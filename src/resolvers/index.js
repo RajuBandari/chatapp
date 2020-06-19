@@ -7,6 +7,10 @@ const resolvers = {
       async forum (root, { id }, { models }) {
         return models.Forum.findByPk(id)
       },
+
+      async forums(root, {}, { models }) {
+        return models.Forum.findAll()
+      }
     },
 
     Mutation: {
@@ -21,11 +25,11 @@ const resolvers = {
 
       async createForum (root, { userId, title, description, private}, { models }) {
         const forum = await models.Forum.create({
-            title,
-            description,
-            private
-          });
-          const userForum = await models.UserForum.create( {
+          title,
+          description,
+          private
+        });
+          await models.UserForum.create( {
             userId,
             forumId: forum.id
           },{ returning: true });

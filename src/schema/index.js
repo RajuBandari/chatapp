@@ -18,6 +18,7 @@ const typeDefs = gql`
     type Query {
         user(id: Int!): User
         forum(id: Int!): Forum
+        forums: [Forum!]!
     }
 
     type Mutation {
