@@ -26,11 +26,19 @@ const resolvers = {
             private
           });
           const userForum = await models.UserForum.create( {
-            userId: userId,
+            userId,
             forumId: forum.id
           },{ returning: true });
 
           return forum;
+      },
+
+      async joinForum(root, { userId, forumId }, { models }) {
+        await models.UserForum.create( {
+          userId,
+          forumId
+        });
+        return models.Forum.findByPk(forumId)
       }
   }
 }
