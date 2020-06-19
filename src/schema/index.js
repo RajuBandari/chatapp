@@ -22,7 +22,7 @@ const typeDefs = gql`
 
     type Mutation {
         createUser(name: String!, email: String!, password: String!, url: String!): User!
-        createForum(title: String!, description: String!, private: Boolean!): Forum!
+        createForum(userId: ID, title: String!, description: String!, private: Boolean!): Forum!
     }
 `;
 

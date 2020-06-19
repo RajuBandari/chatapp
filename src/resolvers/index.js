@@ -18,12 +18,19 @@ const resolvers = {
               url
             })
       },
-      async createForum (root, { title, description, private}, { models }) {
-        return models.Forum.create({
+
+      async createForum (root, { userId, title, description, private}, { models }) {
+        const forum = await models.Forum.create({
             title,
             description,
             private
-          })
+          });
+          const userForum = await models.UserForum.create( {
+            userId: userId,
+            forumId: forum.id
+          },{ returning: true });
+
+          return forum;
       }
   }
 }
