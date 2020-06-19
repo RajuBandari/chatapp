@@ -11,8 +11,16 @@ const typeDefs = gql`
     type Forum {
         id: Int!
         title: String!,
-        description: String!,
+        description: String!
         private: Boolean!
+    }
+
+    type UserForum {
+        id: Int!
+        userId: String!
+        forumId: String!
+        action: String!
+        text: String!
     }
 
     type Query {
@@ -25,6 +33,7 @@ const typeDefs = gql`
         createUser(name: String!, email: String!, password: String!, url: String!): User!
         createForum(userId: ID, title: String!, description: String!, private: Boolean!): Forum!
         joinForum(userId: ID, forumId: ID): Forum!
+        postMessage(userId: ID, forumId: ID, text: String!): UserForum!
     }
 `;
 

@@ -10,6 +10,10 @@ const resolvers = {
 
       async forums(root, {}, { models }) {
         return models.Forum.findAll()
+      },
+
+      async userForums(root, {id}, { models }) {
+
       }
     },
 
@@ -31,7 +35,8 @@ const resolvers = {
         });
           await models.UserForum.create( {
             userId,
-            forumId: forum.id
+            forumId: forum.id,
+            action: 'CREATE'
           },{ returning: true });
 
           return forum;
@@ -43,6 +48,15 @@ const resolvers = {
           forumId
         });
         return models.Forum.findByPk(forumId)
+      },
+
+      async postMessage(root, { userId, forumId, text }, { models }) {
+        return models.UserForum.create( {
+          userId,
+          forumId,
+          text,
+          action: 'MESSAGE'
+        });
       }
   }
 }

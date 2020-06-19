@@ -14,6 +14,12 @@ module.exports = {
       forumId: {
         type: Sequelize.UUID
       },
+      action: {
+        type: Sequelize.STRING
+      },
+      text: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
