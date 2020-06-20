@@ -43,7 +43,7 @@ mutation {
 
 ## Specs
 
-### A user can see the list of forums he has joined.
+* ### A user can see the list of forums he has joined.
 ```javascript
 query {
   user(id:1) {
