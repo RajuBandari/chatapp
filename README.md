@@ -7,7 +7,8 @@ Simple chat application using GraphQL + NodeJS + apollo server
 ### Create User
 ```javascript
 mutation {
-  createUser(name:"test1",email:"test1@yopmail.com",url:"test1.jpg",password:"#512@") {
+  createUser(name:"test2",email:"test2@yopmail.com",url:"test2.jpg",password:"#512@") {
+    id
     name
     email
     url
@@ -15,10 +16,11 @@ mutation {
 }
 ```
 
-### Create Forum
+
+### Join Forum
 ```javascript
 mutation {
-  createForum(userId: 1, title: "test forum2", description: "test2 description", private: false){
+  joinForum(userId:2, forumId:1) {
     title
   }
 }
@@ -41,29 +43,33 @@ query {
 }
 ```
 
-### Join Forum
-```javascript
-mutation {
-  joinForum(userId:2, forumId:1) {
-    title
-  }
-}
-```
+
 
 ## Specs
 
 * ### A user can see the list of forums he has joined.
 ```javascript
 query {
-  user(id:1) {
-    id,
-    name,
-    email,
-    url,
+  user(id:3) {
+    id
+    name
+    email
+    url
     forums {
-      title,
+      id
+      title
       description
     }
+  }
+}
+```
+
+* ### A user can create a new forum (and join it automatically)
+```javascript
+mutation {
+  createForum(userId: 3, title: "test forum3", description: "test3 description", private: false){
+    id
+    title
   }
 }
 ```

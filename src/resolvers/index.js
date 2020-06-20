@@ -70,6 +70,11 @@ const resolvers = {
         forumId: forum.id,
         action: 'CREATE'
       },{ returning: true });
+      await models.UserForum.create( {
+        userId,
+        forumId: forum.id,
+        action: 'JOIN'
+      },{ returning: true });
 
       return forum;
     },
