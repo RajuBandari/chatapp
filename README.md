@@ -66,6 +66,10 @@ mutation {
 }
 ```
 
+* ### see the list of previous messages, ordered by most recent. To be displayed in our client, a message should at least have a text, a sending time and name/picture of the sender
+```javascript
+```
+
 * ### see the name and picture of the members of the forum
 ```javascript
 query {
@@ -79,6 +83,15 @@ query {
       id,
       url
     }
+  }
+}
+```
+
+* ### post a message in the forum
+```javascript
+mutation {
+  postMessage(userId: 3, forumId: 1, text: "this is test message") {
+    text
   }
 }
 ```

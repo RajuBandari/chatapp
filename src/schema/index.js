@@ -7,6 +7,7 @@ const typeDefs = gql`
         email: String!
         url: String!
         forums: [Forum!]!
+        userForums: [UserForum!]!
     }
 
     type Forum {
