@@ -13,15 +13,14 @@ const typeDefs = gql`
         title: String!,
         description: String!
         private: Boolean!
+        users: [User!]!
     }
 
     type UserForum {
-        id: Int!
-        userId: String!
-        forumId: String!
-        action: String!
+        action: String!,
         text: String!
     }
+
 
     type Query {
         user(id: Int!): User

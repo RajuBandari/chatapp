@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Forum.associate = function(models) {
     Forum.belongsToMany(models.User, {
-      through: 'UserForum',
+      through: 'UserForums',
       as: 'users',
       foreignKey: 'forumId',
       otherKey: 'userId'

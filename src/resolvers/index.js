@@ -9,55 +9,64 @@ const resolvers = {
       },
 
       async forums(root, {}, { models }) {
-        return models.Forum.findAll()
-      },
-
-      async userForums(root, {id}, { models }) {
-
+        return await models.Forum.findAll({
+          include: [{
+            model: models.User,
+            as: 'users',
+            required: false,
+            attributes: ['id', 'name', 'email', 'password', 'url'],
+            through: {
+              model: models.UserForum,
+              as: 'userForums',
+              attributes: ['text'],
+            }
+          }]
+        });
       }
+  },
+
+  Mutation: {
+    async createUser (root, { name, email, password, url }, { models }) {
+      return models.User.create({
+        name,
+        email,
+        password,
+        url
+      })
     },
 
-    Mutation: {
-      async createUser (root, { name, email, password, url }, { models }) {
-          return models.User.create({
-              name,
-              email,
-              password,
-              url
-            })
-      },
+    async createForum (root, { userId, title, description, private}, { models }) {
+      const forum = await models.Forum.create({
+        title,
+        description,
+        private
+      });
+      await models.UserForum.create( {
+        userId,
+        forumId: forum.id,
+        action: 'CREATE'
+      },{ returning: true });
 
-      async createForum (root, { userId, title, description, private}, { models }) {
-        const forum = await models.Forum.create({
-          title,
-          description,
-          private
-        });
-          await models.UserForum.create( {
-            userId,
-            forumId: forum.id,
-            action: 'CREATE'
-          },{ returning: true });
+      return forum;
+    },
 
-          return forum;
-      },
+    async joinForum(root, { userId, forumId }, { models }) {
+      await models.UserForum.create( {
+        userId,
+        forumId,
+        action: 'JOIN'
+      });
+      return models.Forum.findByPk(forumId)
+    },
 
-      async joinForum(root, { userId, forumId }, { models }) {
-        await models.UserForum.create( {
-          userId,
-          forumId
-        });
-        return models.Forum.findByPk(forumId)
-      },
-
-      async postMessage(root, { userId, forumId, text }, { models }) {
-        return models.UserForum.create( {
-          userId,
-          forumId,
-          text,
-          action: 'MESSAGE'
-        });
-      }
+    async postMessage(root, { userId, forumId, text }, { models }) {
+      return models.UserForum.create( {
+        userId,
+        forumId,
+        text,
+        action: 'MESSAGE'
+      });
+    }
   }
 }
 
