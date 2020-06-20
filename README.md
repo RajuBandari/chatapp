@@ -14,6 +14,7 @@ mutation {
 }
 
 ### Members in Forum
+```javascript
 query {
   forums {
     id,
@@ -27,6 +28,7 @@ query {
     }
   }
 }
+```
 
 ### Join Forum
 mutation {
