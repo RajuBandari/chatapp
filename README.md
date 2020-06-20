@@ -40,3 +40,39 @@ mutation {
   }
 }
 ```
+
+## Specs
+
+### A user can see the list of forums he has joined.
+```javascript
+query {
+  user(id:1) {
+    id,
+    name,
+    email,
+    url,
+    forums {
+      title,
+      description
+    }
+  }
+}
+```
+
+### Forum(Id) details
+```javascript
+query {
+  forum(id:1) {
+    id,
+    title,
+    description
+    users {
+      name,
+      email,
+      id,
+      url
+    }
+  }
+}
+```
+

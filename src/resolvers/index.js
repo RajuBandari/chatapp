@@ -1,11 +1,35 @@
 const resolvers = {
   Query: {
       async user (root, { id }, { models }) {
-        return models.User.findByPk(id)
+        return models.User.findByPk(id, {
+          include: [{
+            model: models.Forum,
+            as: 'forums',
+            required: false,
+            attributes: ['id', 'title', 'description'],
+            through: {
+              model: models.UserForum,
+              as: 'userForums',
+              attributes: ['text'],
+            }
+          }]
+        })
       },
 
       async forum (root, { id }, { models }) {
-        return models.Forum.findByPk(id)
+        return models.Forum.findByPk(id, {
+          include: [{
+            model: models.User,
+            as: 'users',
+            required: false,
+            attributes: ['id', 'name', 'email', 'password', 'url'],
+            through: {
+              model: models.UserForum,
+              as: 'userForums',
+              attributes: ['text'],
+            }
+          }]
+        })
       },
 
       async forums(root, {}, { models }) {
