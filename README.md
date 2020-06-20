@@ -15,6 +15,15 @@ mutation {
 }
 ```
 
+### Create Forum
+```javascript
+mutation {
+  createForum(userId: 1, title: "test forum2", description: "test2 description", private: false){
+    title
+  }
+}
+```
+
 ### Members in Forum
 ```javascript
 query {
