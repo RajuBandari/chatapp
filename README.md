@@ -17,34 +17,6 @@ mutation {
 ```
 
 
-### Join Forum
-```javascript
-mutation {
-  joinForum(userId:2, forumId:1) {
-    title
-  }
-}
-```
-
-### Members in Forum
-```javascript
-query {
-  forums {
-    id,
-    title,
-    description
-    users {
-      name,
-      email,
-      id,
-      url
-    }
-  }
-}
-```
-
-
-
 ## Specs
 
 * ### A user can see the list of forums he has joined.
@@ -85,7 +57,16 @@ query {
 }
 ```
 
-### Forum(Id) details
+* ### He can also join a forum if he knows the forum id
+```javascript
+mutation {
+  joinForum(userId:3, forumId: 1) {
+    title
+  }
+}
+```
+
+* ### see the name and picture of the members of the forum
 ```javascript
 query {
   forum(id:1) {
