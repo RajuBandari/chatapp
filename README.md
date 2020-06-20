@@ -74,6 +74,17 @@ mutation {
 }
 ```
 
+* ### A user can see the list of available forum and can join any
+```javascript
+query {
+  forums {
+    id
+    title
+    description
+  }
+}
+```
+
 ### Forum(Id) details
 ```javascript
 query {
