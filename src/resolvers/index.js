@@ -25,7 +25,7 @@ const resolvers = {
             attributes: ['id', 'name', 'email', 'password', 'url'],
             through: {
               model: models.UserForum,
-              as: 'userForums',
+              as: 'userForum',
               attributes: ['text'],
             }
           }]
@@ -46,6 +46,16 @@ const resolvers = {
             }
           }]
         });
+      },
+
+      async messages(root, { forumId }, { models }) {
+        return await models.UserForum.findAll({
+          where: {forumId, action: "MESSAGE"},
+          order: [
+            ['createdAt', 'DESC']
+          ],
+          include: 'user'
+        })
       }
   },
 

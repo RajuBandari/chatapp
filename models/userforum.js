@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     text: DataTypes.STRING
   }, {});
   UserForum.associate = function(models) {
-    // associations can be defined here
+    UserForum.belongsTo(models.User, {foreignKey: 'userId', as: 'user'})
+    UserForum.belongsTo(models.Forum, {foreignKey: 'forumId', as: 'forum'})
   };
   return UserForum;
 };

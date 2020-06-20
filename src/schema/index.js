@@ -7,7 +7,6 @@ const typeDefs = gql`
         email: String!
         url: String!
         forums: [Forum!]!
-        userForums: [UserForum!]!
     }
 
     type Forum {
@@ -19,8 +18,10 @@ const typeDefs = gql`
     }
 
     type UserForum {
-        action: String!,
+        action: String!
         text: String!
+        createdAt: String!
+        user: User!
     }
 
 
@@ -28,6 +29,7 @@ const typeDefs = gql`
         user(id: Int!): User
         forum(id: Int!): Forum
         forums: [Forum!]!
+        messages(forumId: Int!): [UserForum!]!
     }
 
     type Mutation {
