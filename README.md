@@ -5,6 +5,7 @@ Simple chat application using GraphQL + NodeJS + apollo server
 
 
 ### Create User
+```javascript
 mutation {
   createUser(name:"test1",email:"test1@yopmail.com",url:"test1.jpg",password:"#512@") {
     name
@@ -12,6 +13,7 @@ mutation {
     url
   }
 }
+```
 
 ### Members in Forum
 ```javascript
@@ -31,8 +33,10 @@ query {
 ```
 
 ### Join Forum
+```javascript
 mutation {
   joinForum(userId:2, forumId:1) {
     title
   }
 }
+```
