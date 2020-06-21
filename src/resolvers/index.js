@@ -64,8 +64,8 @@ const resolvers = {
     },
 
     joinForum: (root, { userId, forumId }) => {
-      if(!users[userId]) {
-        throw new AuthenticationError('User not found');
+      if(!users[userId] || !forums[forumId]) {
+        throw new UserInputError('Invalid input');
       }
       const forum = forums[forumId];
       forum.users.push(users[userId]);
@@ -74,6 +74,9 @@ const resolvers = {
     },
 
     postMessage: (root, { userId, forumId, text }) => {
+      if(!users[userId] || !forums[forumId]) {
+        throw new UserInputError('Invalid input');
+      }
       const forum = forums[forumId];
       const user = users[userId];
       if(!forum.users.includes(user)) {
