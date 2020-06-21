@@ -1,113 +1,83 @@
+const {
+  ForbiddenError
+} = require('apollo-server-express');
+
+const User = require('./User');
+const Forum = require('./Forum');
+
+const users = {}; // users data
+const forums = {}; // forums data
+
 const resolvers = {
   Query: {
-      async user (root, { id }, { models }) {
-        return models.User.findByPk(id, {
-          include: [{
-            model: models.Forum,
-            as: 'forums',
-            required: false,
-            attributes: ['id', 'title', 'description'],
-            through: {
-              model: models.UserForum,
-              as: 'userForums',
-              attributes: ['text'],
-            }
-          }]
-        })
-      },
 
-      async forum (root, { id }, { models }) {
-        return models.Forum.findByPk(id, {
-          include: [{
-            model: models.User,
-            as: 'users',
-            required: false,
-            attributes: ['id', 'name', 'email', 'password', 'url'],
-            through: {
-              model: models.UserForum,
-              as: 'userForum',
-              attributes: ['text'],
-            }
-          }]
-        })
-      },
+    getUser: (root, { id }) => {
+      return new User(id, users[id]);
+    },
 
-      async forums(root, {}, { models }) {
-        return await models.Forum.findAll({
-          include: [{
-            model: models.User,
-            as: 'users',
-            required: false,
-            attributes: ['id', 'name', 'email', 'password', 'url'],
-            through: {
-              model: models.UserForum,
-              as: 'userForums',
-              attributes: ['text'],
-            }
-          }]
-        });
-      },
+    userForums: (root, { id }) => {
+      return Object.values(forums)
+        .filter(forum => forum.users.every(() => forum.users.includes(id)));
+    },
 
-      async messages(root, { forumId }, { models }) {
-        return await models.UserForum.findAll({
-          where: {forumId, action: "MESSAGE"},
-          order: [
-            ['createdAt', 'DESC']
-          ],
-          include: 'user'
-        })
+    availableForums: (root, { id }) => {
+      return Object.values(forums)
+        .filter(forum => forum.users.every(() => !forum.users.includes(id)));
+    },
+
+    getForum: (root, { id, userId }) => {
+      const forum = forums[id];
+      if(!forum.users.includes(userId)) {
+        throw new ForbiddenError('Not Allowed');
       }
+      const messages = forum.messages.sort(function(a,b){
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+      return {
+        messages,
+        ...forum
+      }
+    }
   },
 
   Mutation: {
-    async createUser (root, { name, email, password, url }, { models }) {
-      return models.User.create({
-        name,
-        email,
-        password,
-        url
-      })
+
+    createUser: (root, { user }) => {
+      const id = require('crypto').randomBytes(10).toString('hex');
+      users[id] = user;
+      return new User(id, user);
     },
 
-    async createForum (root, { userId, title, description, private}, { models }) {
-      const forum = await models.Forum.create({
-        title,
-        description,
-        private
-      });
-      await models.UserForum.create( {
-        userId,
-        forumId: forum.id,
-        action: 'CREATE'
-      },{ returning: true });
-      await models.UserForum.create( {
-        userId,
-        forumId: forum.id,
-        action: 'JOIN'
-      },{ returning: true });
+    createForum: (root, { forum }) => {
+      const id = require('crypto').randomBytes(10).toString('hex');
+      const newForum = new Forum(id, forum);
+      forums[id] = newForum;
+      return newForum;
+    },
 
+    joinForum: (root, { userId, forumId }) => {
+      const forum = forums[forumId];
+      forum.users.push(userId);
+      forums[forumId] = forum;
       return forum;
     },
 
-    async joinForum(root, { userId, forumId }, { models }) {
-      await models.UserForum.create( {
-        userId,
-        forumId,
-        action: 'JOIN'
-      });
-      return models.Forum.findByPk(forumId)
-    },
-
-    async postMessage(root, { userId, forumId, text }, { models }) {
-      return models.UserForum.create( {
-        userId,
-        forumId,
-        text,
-        action: 'MESSAGE'
-      });
+    postMessage: (root, { userId, forumId, text }) => {
+      const forum = forums[forumId];
+      const user = users[userId];
+      if(forum.users.includes(userId)) {
+        forum.messages.push({
+          text,
+          user,
+          createdAt: Date.now()
+        })
+        forums[forumId] = forum;
+        return forum;
+      } else {
+        throw new ForbiddenError('Not Allowed');
+      }
     }
   }
 }
-
-
+ 
 module.exports = resolvers;

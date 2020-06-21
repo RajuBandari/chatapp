@@ -1,19 +1,16 @@
 {
-  "name": "chatapp",
+  "name": "forum",
   "version": "1.0.0",
-  "description": "",
+  "description": "simple forum chat app",
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "raju",
+  "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.4",
-    "sequelize": "^5.21.13",
-    "sequelize-cli": "^5.5.1",
-    "sqlite3": "^4.2.0"
+    "nodemon": "^2.0.4"
   },
   "dependencies": {
     "apollo-server-express": "^2.15.0",

@@ -2,41 +2,55 @@ const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
     type User {
-        id: Int!
+        id: ID
         name: String!
         email: String!
         url: String!
-        forums: [Forum!]!
     }
 
     type Forum {
-        id: Int!
+        id: ID
         title: String!,
         description: String!
-        private: Boolean!
-        users: [User!]!
+        isPrivate: Boolean!
+        admin: User!
+        users: [User!]
+        messages: [Message!]
     }
 
-    type UserForum {
-        action: String!
+    type Message {
         text: String!
         createdAt: String!
         user: User!
     }
 
-
     type Query {
-        user(id: Int!): User
-        forum(id: Int!): Forum
-        forums: [Forum!]!
-        messages(forumId: Int!): [UserForum!]!
+        getUser(id: ID): User
+        getForum(id: ID, userId: ID): Forum
+        userForums(id: ID): [Forum]
+        availableForums(id: ID): [Forum]
+    }
+
+    input UserInput {
+        id: ID
+        name: String!
+        email: String!
+        url: String!
+    }
+
+    input ForumInput {
+        id: ID
+        title: String!
+        description: String!
+        userId: ID!,
+        isPrivate: Boolean,
     }
 
     type Mutation {
-        createUser(name: String!, email: String!, password: String!, url: String!): User!
-        createForum(userId: ID, title: String!, description: String!, private: Boolean!): Forum!
-        joinForum(userId: ID, forumId: ID): Forum!
-        postMessage(userId: ID, forumId: ID, text: String!): UserForum!
+        createUser(user: UserInput!): User!
+        createForum(forum: ForumInput!): Forum!
+        joinForum(userId: ID!, forumId: ID!): Forum!
+        postMessage(userId: ID! forumId: ID!, text: String!): Forum!
     }
 `;
 
