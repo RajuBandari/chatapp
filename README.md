@@ -65,7 +65,7 @@ mutation {
 * ### see the list of previous messages, ordered by most recent. To be displayed in our client, a message should at least have a text, a sending time and name/picture of the sender
 ```javascript
 query {
-  getForum(id: <forumId>, userId: <userID>) {
+  getForum(id: <forumId>) {
     messages {
       text
       createdAt
@@ -82,12 +82,11 @@ query {
 * ### see the name and picture of the members of the forum
 ```javascript
 query {
-  userForums(id: <userId>) {
-    title,
+  getForum(id: <forumId>) {
     users {
-      name,
-      url
-    }
+        name
+        url
+      }
   }
 }
 ```

@@ -28,11 +28,8 @@ const resolvers = {
         .filter(forum => forum.users.every(() => !forum.users.includes(users[id])));
     },
 
-    getForum: (root, { id, userId }) => {
+    getForum: (root, { id }) => {
       const forum = forums[id];
-      if(!forum.users.includes(users[userId])) {
-        throw new ForbiddenError('Not Allowed');
-      }
       const messages = forum.messages.sort(function(a,b){
         return new Date(b.createdAt) - new Date(a.createdAt);
       });
