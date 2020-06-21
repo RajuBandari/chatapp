@@ -11,7 +11,7 @@ class Forum {
         this.description = description;
         this.isPrivate = this.isPrivate;
         this.admin = userId;
-        this.users = [userId]
+        this.users = []
         this.messages = [];
         this.rest = rest;
     }

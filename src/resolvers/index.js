@@ -1,4 +1,5 @@
 const {
+  AuthenticationError,
   ForbiddenError
 } = require('apollo-server-express');
 
@@ -48,14 +49,22 @@ const resolvers = {
       return new User(id, user);
     },
 
-    createForum: (root, { forum }) => {
+    createForum: (root, { userId, forum }) => {
+      const user = users[userId];
+      if(!user) {
+        throw new AuthenticationError('User not found');
+      }
       const id = require('crypto').randomBytes(10).toString('hex');
       const newForum = new Forum(id, forum);
+      newForum.users.push(user);
       forums[id] = newForum;
       return newForum;
     },
 
     joinForum: (root, { userId, forumId }) => {
+      if(!users[userId]) {
+        throw new AuthenticationError('User not found');
+      }
       const forum = forums[forumId];
       forum.users.push(userId);
       forums[forumId] = forum;
