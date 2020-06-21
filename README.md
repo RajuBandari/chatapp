@@ -20,7 +20,7 @@ mutation {
 ## Specs
 * ### A user can see the list of forums he has joined.
 ```javascript
-uery {
+query {
   userForums(id:<userId>){
     id
     title

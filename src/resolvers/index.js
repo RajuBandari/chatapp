@@ -1,13 +1,15 @@
 const {
   AuthenticationError,
+  UserInputError,
   ForbiddenError
 } = require('apollo-server-express');
 
 const User = require('./User');
 const Forum = require('./Forum');
 
-const users = {}; // users data
-const forums = {}; // forums data
+// data
+const users = {}; 
+const forums = {};
 
 const resolvers = {
   Query: {
@@ -18,17 +20,17 @@ const resolvers = {
 
     userForums: (root, { id }) => {
       return Object.values(forums)
-        .filter(forum => forum.users.every(() => forum.users.includes(id)));
+        .filter(forum => forum.users.every(() => forum.users.includes(users[id])));
     },
 
     availableForums: (root, { id }) => {
       return Object.values(forums)
-        .filter(forum => forum.users.every(() => !forum.users.includes(id)));
+        .filter(forum => forum.users.every(() => !forum.users.includes(users[id])));
     },
 
     getForum: (root, { id, userId }) => {
       const forum = forums[id];
-      if(!forum.users.includes(userId)) {
+      if(!forum.users.includes(users[userId])) {
         throw new ForbiddenError('Not Allowed');
       }
       const messages = forum.messages.sort(function(a,b){
@@ -49,8 +51,8 @@ const resolvers = {
       return new User(id, user);
     },
 
-    createForum: (root, { userId, forum }) => {
-      const user = users[userId];
+    createForum: (root, { forum }) => {
+      const user = users[forum.userId];
       if(!user) {
         throw new AuthenticationError('User not found');
       }
@@ -66,7 +68,7 @@ const resolvers = {
         throw new AuthenticationError('User not found');
       }
       const forum = forums[forumId];
-      forum.users.push(userId);
+      forum.users.push(users[userId]);
       forums[forumId] = forum;
       return forum;
     },
@@ -74,17 +76,16 @@ const resolvers = {
     postMessage: (root, { userId, forumId, text }) => {
       const forum = forums[forumId];
       const user = users[userId];
-      if(forum.users.includes(userId)) {
-        forum.messages.push({
-          text,
-          user,
-          createdAt: Date.now()
-        })
-        forums[forumId] = forum;
-        return forum;
-      } else {
+      if(!forum.users.includes(user)) {
         throw new ForbiddenError('Not Allowed');
       }
+      forum.messages.push({
+        text,
+        user,
+        createdAt: Date.now()
+      })
+      forums[forumId] = forum;
+      return forum;
     }
   }
 }
