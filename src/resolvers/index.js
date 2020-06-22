@@ -1,3 +1,9 @@
+'use strict';
+
+const fs = require('fs');
+const path = require('path');  
+const filePath = path.join(__dirname, '../data/fixtures.json');
+
 const {
   AuthenticationError,
   UserInputError,
@@ -8,8 +14,17 @@ const User = require('./User');
 const Forum = require('./Forum');
 
 // data
-const users = {}; 
-const forums = {};
+let users = {}; 
+let forums = {};
+
+// loading fake data
+fs.readFile(filePath, (err, data) => {
+    if (err) throw err;
+    const { usersData, forumsData } = JSON.parse(data);
+    users = usersData;
+    forums = forumsData
+    return;
+});
 
 const resolvers = {
   Query: {
